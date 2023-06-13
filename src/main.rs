@@ -107,7 +107,7 @@ async fn real_time(
                 let res_equity = trade_mapper::TradeMapper::get_equity();
                 if let Ok(e) = res_equity {
                     for eq in e {
-                        let eq_name: Value = eq.name.split("").collect();
+                        let eq_name: Value = serde_json::Value::String(eq.name.replace("", " "));
                         println!("eqqqqqqqqqqqq{}, name{}", eq_name, name);
                     }
                 }
