@@ -47,7 +47,7 @@ async fn real_time(
         // let mut response: Map<String, Value> = Map::new();
         // let mut json_data: Map<String, Value> = Map::new();
         let mut map: Map<String, Value> = Map::new();
-        let mut equity_histories: VecDeque<Value> = VecDeque::new();
+        
         
 
         // 监控服务器状态
@@ -91,25 +91,68 @@ async fn real_time(
 
         if let Ok(a) = res {
         for f_config in a {
-            let mut equity_map: Map<String, Value> = Map::new();
-        let now = Utc::now();
-        let date = format!("{}", now.format("%Y/%m/%d %H:%M:%S"));
-            let binance_futures_api=BinanceFuturesApi::new(
-                "https://fapi.binance.com",
-                &f_config.api_key,
-                &f_config.secret_key,
-            );
+            let mut net_worth_histories: VecDeque<Value> = VecDeque::new();
+            
+        // let now = Utc::now();
+        // let date = format!("{}", now.format("%Y/%m/%d %H:%M:%S"));
+            // let binance_futures_api=BinanceFuturesApi::new(
+            //     "https://fapi.binance.com",
+            //     &f_config.api_key,
+            //     &f_config.secret_key,
+            // );
             let name = f_config.name;
             let ori_balance = f_config.ori_balance;
 
             if ori_balance.len() != 0 {
-                // let blance: f64 = ori_balance.parse().unwrap();
+                let blance: f64 = ori_balance.parse().unwrap();
                 let res_equity = trade_mapper::TradeMapper::get_equity();
                 if let Ok(e) = res_equity {
                     for eq in e {
                         let len = eq.name.len() - 1;
                         if &eq.name[1..len] == name {
-                            println!("数据name{}", &eq.name[1..len]);
+                            if name == "Angus" {
+                                let mut net_worth_map: Map<String, Value> = Map::new();
+                                let prod_len = eq.prod_id.len() - 1;
+                                let time_len = eq.time.len() - 1;
+                                let equity_len = eq.equity_eth.len() - 1;
+                                let equity: f64 = eq.equity_eth[1..equity_len].parse().unwrap();
+                                let net_worth = equity / blance;
+                                let time = &eq.time[1..time_len];
+                                let prod_id = &eq.prod_id[1..prod_len];
+                                let eq_name = &eq.name[1..len];
+                                net_worth_map.insert(String::from("name"), Value::from(eq_name));
+                                net_worth_map.insert(String::from("time"), Value::from(time));
+                                net_worth_map.insert(String::from("net_worth"), Value::from(net_worth));
+                                net_worth_map.insert(String::from("prod_id"), Value::from(prod_id));
+                                net_worth_histories.push_back(Value::from(net_worth_map));
+                                let res = trade_mapper::TradeMapper::insert_net_worth(Vec::from(net_worth_histories.clone()));
+                                println!("插入净值数据成功{}, 数据{:?}", res, Vec::from(net_worth_histories.clone()));
+                            } else {
+                                let mut net_worth_map: Map<String, Value> = Map::new();
+                                let prod_len = eq.prod_id.len() - 1;
+                                let time_len = eq.time.len() - 1;
+                                let equity_len = eq.equity.len() - 1;
+                                let equity: f64 = eq.equity_eth[1..equity_len].parse().unwrap();
+                                let net_worth = equity / blance;
+                                let time = &eq.time[1..time_len];
+                                let prod_id = &eq.prod_id[1..prod_len];
+                                let eq_name = &eq.name[1..len];
+                                net_worth_map.insert(String::from("name"), Value::from(eq_name));
+                                net_worth_map.insert(String::from("time"), Value::from(time));
+                                net_worth_map.insert(String::from("net_worth"), Value::from(net_worth));
+                                net_worth_map.insert(String::from("prod_id"), Value::from(prod_id));
+                                net_worth_histories.push_back(Value::from(net_worth_map));
+                                let res = trade_mapper::TradeMapper::insert_net_worth(Vec::from(net_worth_histories.clone()));
+                                println!("插入净值数据成功{}, 数据{:?}", res, Vec::from(net_worth_histories.clone()));
+                            }
+
+
+
+
+
+
+
+                            
                             
                         }
                     }
@@ -121,8 +164,8 @@ async fn real_time(
 
         }
     }
-        let res = trade_mapper::TradeMapper::insert_equity(Vec::from(equity_histories.clone()));
-        println!("插入权益数据{}, 数据{:?}", res, Vec::from(equity_histories.clone()));
+        // let res = trade_mapper::TradeMapper::insert_equity(Vec::from(equity_histories.clone()));
+        // println!("插入权益数据{}, 数据{:?}", res, Vec::from(equity_histories.clone()));
 
 
         // 获取账户信息

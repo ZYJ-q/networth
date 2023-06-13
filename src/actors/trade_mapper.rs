@@ -10,18 +10,19 @@ use super::db_data::{Trader, Equity};
 
 impl TradeMapper {
   // 插入数据
-  pub fn insert_equity(equitys:Vec<Value>) -> bool {
+  pub fn insert_net_worth(net_worths:Vec<Value>) -> bool {
     // 连接数据库
     let mut conn = get_connect();
     // let query_id = conn.exec_first(, params)
 
     let flag = conn.exec_batch(
-      r"INSERT IGNORE INTO net_worth (name, net_worth, time)
-      VALUES (:name, :net_worth, :time)",
-      equitys.iter().map(|p| params! {
+      r"INSERT IGNORE INTO net_worth (name, time, net_worth, prod_id)
+      VALUES (:name, :time, :net_worth, :prod_id)",
+      net_worths.iter().map(|p| params! {
         "name" => &p["name"],
-        "net_worth" => &p["net_worth"],
         "time" => &p["time"],
+        "net_worth" => &p["net_worth"],
+        "prod_id" => &p["prod_id"]
       })
     );
 
