@@ -108,7 +108,10 @@ async fn real_time(
                 if let Ok(e) = res_equity {
                     for eq in e {
                         let len = eq.name.len() - 1;
-                        println!("数据name{}", &eq.name[1..len])
+                        if &eq.name[1..len] == name {
+                            println!("数据name{}", &eq.name[1..len]);
+                            
+                        }
                     }
                 }
 
