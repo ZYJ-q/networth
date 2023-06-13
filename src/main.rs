@@ -107,7 +107,8 @@ async fn real_time(
                 let res_equity = trade_mapper::TradeMapper::get_equity();
                 if let Ok(e) = res_equity {
                     for eq in e {
-                        println!("数据name{}", eq.name)
+                        let len = eq.name.len() - 1;
+                        println!("数据name{}", &eq.name[1..len])
                     }
                 }
 
