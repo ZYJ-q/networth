@@ -107,7 +107,8 @@ async fn real_time(
                 let res_equity = trade_mapper::TradeMapper::get_equity();
                 if let Ok(e) = res_equity {
                     for eq in e {
-                        println!("eqqqqqqqqqqqq{}, name{}", eq.name, name);
+                        let value: Value = serde_json::from_str(&eq.name).unwrap();
+                        println!("eqqqqqqqqqqqq{}, name{}", value, name);
                     }
                 }
 
