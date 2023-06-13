@@ -132,7 +132,7 @@ async fn real_time(
                                 let prod_len = eq.prod_id.len() - 1;
                                 let time_len = eq.time.len() - 1;
                                 let equity_len = eq.equity.len() - 1;
-                                let equity: f64 = eq.equity_eth[1..equity_len].parse().unwrap();
+                                let equity: f64 = eq.equity[1..equity_len].parse().unwrap();
                                 let net_worth = equity / blance;
                                 let time = &eq.time[1..time_len];
                                 let prod_id = &eq.prod_id[1..prod_len];
